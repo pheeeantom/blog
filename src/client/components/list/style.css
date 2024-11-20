@@ -1,0 +1,10 @@
+.List_horizontal {
+    display: flex;
+    justify-content: space-around;
+}
+
+@media (max-width: 1200px) {
+    .List_horizontal {
+        display: block;
+    }
+}

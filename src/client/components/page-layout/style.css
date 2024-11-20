@@ -1,0 +1,12 @@
+.PageLayout {
+    margin-left: 300px;
+    margin-right: 300px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+@media (max-width: 1200px) {
+    .PageLayout {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
