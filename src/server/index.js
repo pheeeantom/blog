@@ -1,5 +1,6 @@
 const express = require('express');
 const fileUpload = require('express-fileupload');
+var sizeOf = require('buffer-image-size');
 const app = express();
 const port = 3333;
 
@@ -65,6 +66,7 @@ app.use(express.static('public'));
 
 app.get('/api/items', (req, res) => {
     //res.status(405).json({message: 'test'});
+    if (req.query.limit > 100) return res.status(400).json({message: 'Слишком большая выборка'});
     console.log(req.user);
     let data = JSON.parse(fs.readFileSync('src/data/posts.json',
         { encoding: 'utf8', flag: 'r' }));
@@ -121,12 +123,19 @@ app.post('/api/registrate', (req, res) => {
     return res.status(200).json(newUser);
 });
 
-app.post('/api/items/create', (req, res) => {
+app.post('/api/items/create', async (req, res) => {
     const users = JSON.parse(fs.readFileSync('src/data/users.json',
         { encoding: 'utf8', flag: 'r' }));
     const posts = JSON.parse(fs.readFileSync('src/data/posts.json',
         { encoding: 'utf8', flag: 'r' }));
     //console.log(req.body.login);
+    console.log('width:' + req.files.file.width);
+    if (req.body.header.length > 50) return res.status(400).json({ message: 'Слишком большой заголовок'});
+    if (req.body.text.length > 1000) return res.status(400).json({ message: 'Слишком большой текст'});
+    if (req.files.file.size > 1024 * 1024 * 50) return res.status(400).json({ message: 'Слишком болшой файл' });
+    if (!(['image/gif', 'image/jpeg', 'image/pjpeg', 'image/x-png', 'image/png', 'image/svg+xml'].includes(req.files.file.mimetype))) return res.status(400).json({ message: 'Не изображение' })
+    var dimensions = sizeOf(Buffer.from(req.files.file.data));
+    if (dimensions.width / dimensions.height > 5 || dimensions.height / dimensions.width > 5) return res.status(400).json({ message: 'Слишком высокое/широкое изображени'});
     if (
         req.user
     ) {

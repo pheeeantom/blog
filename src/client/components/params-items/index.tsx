@@ -12,7 +12,7 @@ function ParamsItems({sort, setParam}: {sort: string, setParam: Function}) {
 
   useEffect(() => {
     selectRef.current.value = sort;
-  }, [selectRef]);
+  }, [selectRef, sort]);
 
   return (
     <div className={cn()}>
@@ -23,6 +23,12 @@ function ParamsItems({sort, setParam}: {sort: string, setParam: Function}) {
             <option value={'date'}>Сортировать по дате</option>
             <option value={'likes'}>Сортировать по лайкам</option>
         </select>
+        <button onClick={(e) => setParam({
+          start: '0',
+          limit: '2',
+          sort: 'likes',
+          login: '',
+        })}>Сбросить фильтры</button>
     </div>
   );
 }

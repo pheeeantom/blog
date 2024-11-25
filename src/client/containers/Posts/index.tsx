@@ -44,7 +44,7 @@ function Posts({fetchedUser, create, byLogin}: Readonly<{fetchedUser: any, creat
                 let temp = await postReq(newPost).unwrap();
                 console.log(temp);
             } catch (e) {
-                console.log(e);
+                alert(e.data.message);
             }
         }, [postReq]),
         like: useCallback((id: number) => {

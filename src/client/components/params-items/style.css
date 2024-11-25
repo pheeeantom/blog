@@ -1,3 +1,11 @@
 .ParamsItems {
     text-align: center;
 }
+
+.ParamsItems button {
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    border-bottom: 3px dotted gray;
+    cursor: pointer;
+    margin-left: 20px;
+}
