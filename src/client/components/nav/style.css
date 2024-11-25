@@ -1,0 +1,16 @@
+/*.Nav {
+    display: flex;
+}
+
+.Nav-left, .Nav-right {
+    display: flex;
+    width: 50%;
+}
+
+.Nav-left {
+    justify-content: start;
+}
+
+.Nav-right {
+    justify-content: end;
+}*/

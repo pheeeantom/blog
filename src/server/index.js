@@ -65,9 +65,20 @@ app.use(express.static('public'));
 
 app.get('/api/items', (req, res) => {
     //res.status(405).json({message: 'test'});
-    const data = fs.readFileSync('src/data/posts.json',
-        { encoding: 'utf8', flag: 'r' });
-    res.json(JSON.parse(data));
+    console.log(req.user);
+    let data = JSON.parse(fs.readFileSync('src/data/posts.json',
+        { encoding: 'utf8', flag: 'r' }));
+    let amount = data.length;
+    if (req.query.sort === 'date') {
+        data = data.sort((a, b) => b.id - a.id);
+    } else {
+        data = data.sort((a, b) => b.likes - a.likes);
+    }
+    data = data.slice(+req.query.start, +req.query.start + +req.query.limit);
+    data = data.map(post => ({
+        ...post, isLiked: req.user ? Boolean(req.user.likes?.includes(post.id)) : null
+    }));
+    return res.json({amount, data});
 });
 
 app.post('/api/auth', (req, res) => {
@@ -167,6 +178,55 @@ app.post('/api/items/create', (req, res) => {
     }
 
     console.log('else');
+
+    return res.status(401).json({message: 'Not authorized'});
+});
+
+app.post('/api/items/like', (req, res) => {
+    const users = JSON.parse(fs.readFileSync('src/data/users.json',
+        { encoding: 'utf8', flag: 'r' }));
+    const posts = JSON.parse(fs.readFileSync('src/data/posts.json',
+        { encoding: 'utf8', flag: 'r' }));
+    if (
+        req.user
+    ) {
+        let newPosts;
+        let newUsers;
+        if (req.user.likes?.includes(req.body.id)) {
+            newPosts = posts.map(post => {
+                if (post.id === req.body.id) {
+                    return {...post, likes: (post.likes ?? 0) - 1};
+                } else {
+                    return post;
+                }
+            });
+            newUsers = users.map(user => {
+                if (user.id === req.user.id) {
+                    return {...user, likes: user.likes.filter(id => id !== req.body.id)};
+                } else {
+                    return user;
+                }
+            });
+        } else {
+            newPosts = posts.map(post => {
+                if (post.id === req.body.id) {
+                    return {...post, likes: (post.likes ?? 0) + 1};
+                } else {
+                    return post;
+                }
+            });
+            newUsers = users.map(user => {
+                if (user.id === req.user.id) {
+                    return {...user, likes: [...(user.likes ?? []), req.body.id]};
+                } else {
+                    return user;
+                }
+            });
+        }
+        fs.writeFileSync('src/data/posts.json', JSON.stringify(newPosts), { encoding: 'utf8' });
+        fs.writeFileSync('src/data/users.json', JSON.stringify(newUsers), { encoding: 'utf8' });
+        return res.status(200);
+    }
 
     return res.status(401).json({message: 'Not authorized'});
 });

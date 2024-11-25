@@ -1,0 +1,16 @@
+.TwoSided {
+    display: flex;
+}
+
+.TwoSided-left, .TwoSided-right {
+    display: flex;
+    align-items: center;
+}
+
+.TwoSided-left {
+    margin-right: auto;
+}
+
+.TwoSided-right {
+    margin-left: auto;
+}

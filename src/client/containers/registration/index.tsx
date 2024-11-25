@@ -1,12 +1,23 @@
-import React, { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { useFetchUserQuery, useLoginMutation, useRegistrationMutation } from "../../store/services/users";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, redirect } from "react-router-dom";
 import RegistrationForm from "../../components/registration-form";
+import { setChangedLocalStorage } from "../../store/reducers/users";
 
 function Registration() {
 
   console.log("Registration");
+
+  const dispatch = useDispatch();
+
+  /*const select = useSelector((state) => ({
+    changedLocalStorage: (state as any).usersReducer.changedLocalStorage,
+  }));*/
+  const changedLocalStorage = useSelector(state => (state as any).usersReducer.changedLocalStorage);
+  const memoizedChangedLocalStorage = useMemo(() => {
+    return changedLocalStorage;
+  }, [changedLocalStorage]);
 
   const [registrationReq, result] = useRegistrationMutation();
   const [login, setLogin] = useState('');
@@ -28,6 +39,7 @@ function Registration() {
         setLogin(temp.data.login);
         setPassword(temp.data.password);
         localStorage.removeItem('token');
+        dispatch(setChangedLocalStorage(memoizedChangedLocalStorage + 1));
     }, []),
   };
 

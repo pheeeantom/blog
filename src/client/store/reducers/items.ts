@@ -6,10 +6,19 @@ export type Item = {
     author: string,
     header: string,
     text: string,
+    likes?: number,
+    isLiked?: boolean | null,
+}
+
+export type ItemsData = {
+    amount: number,
+    data: Item[],
 }
 
 export type ItemsParams = {
+    start: string,
     limit: string,
+    sort: string,
 };
 
 type Items = {
@@ -18,7 +27,9 @@ type Items = {
 
 const initialState: Items = {
     params: {
-        limit: '10',
+        start: '0',
+        limit: '2',
+        sort: 'likes',
     },
 }
 

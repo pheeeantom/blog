@@ -1,15 +1,20 @@
 import { fetchBaseQuery, TypedUseQuery, createApi, TypedUseMutation } from "@reduxjs/toolkit/query/react";
 import { Item, ItemsParams } from "../reducers/items";
 import { User } from "../reducers/users";
-import _ from 'lodash';
+
+//export let prev = 0;
 
 export const usersAPI = createApi({
     reducerPath: 'usersAPI',
     baseQuery: fetchBaseQuery({
         baseUrl: '',
-        prepareHeaders: (headers) => {
+        prepareHeaders: (headers, {getState}) => {
+            console.log(getState());
             console.log(localStorage.getItem('token'));
+            //if ((getState() as any).usersReducer.changedLocalStorage !== prev) {
             headers.set('Authorization', 'Bearer ' + localStorage.getItem('token'));
+            //}
+            //prev = (getState() as any).usersReducer.changedLocalStorage;
             return headers;
         }
     }),
@@ -46,7 +51,7 @@ export const usersAPI = createApi({
         fetchUser: build.query<User, number>({
             query: (changeId) => `/user`,
             //providesTags: result => ['Post'],
-        })
+        }),
     })
 });
 

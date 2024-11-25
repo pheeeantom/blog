@@ -1,0 +1,25 @@
+.CreatePostItem {
+    text-align: center;
+}
+
+.CreatePostItem form {
+    display: inline-block;
+    border: 3px dotted gray;
+    margin: 40px 0;
+    padding: 20px;
+}
+
+.CreatePostItem-field {
+    text-align: left;
+    margin: 20px 0;
+}
+
+.CreatePostItem-field label {
+    width: 30%;
+    display: inline-block;
+}
+
+.CreatePostItem-field input, .CreatePostItem-field textarea {
+    width: 65%;
+    display: inline-block;
+}

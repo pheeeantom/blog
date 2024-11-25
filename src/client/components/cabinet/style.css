@@ -1,0 +1,16 @@
+/*.Cabinet {
+    display: flex;
+}
+
+.Cabinet-left, .Cabinet-right {
+    display: flex;
+    width: 50%;
+}
+
+.Cabinet-left {
+    justify-content: start;
+}
+
+.Cabinet-right {
+    justify-content: end;
+}*/

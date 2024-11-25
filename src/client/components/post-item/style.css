@@ -1,0 +1,38 @@
+.PostItem {
+    display: flex;
+    justify-content: center;
+}
+
+.PostItem button {
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    cursor: pointer;
+}
+
+.PostItem-center {
+    display: flex;
+    align-items: center;
+    width: 60%;
+}
+
+.PostItem-left {
+    width: 50%;
+    height: 100px;
+    display: inline-block;
+    text-align: center;
+    margin-right: 30px;
+}
+
+.PostItem-left img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.PostItem-right {
+    width: 45%;
+    display: inline-block;
+}
+
+.PostItem-author_muted {
+    color: gray;
+}

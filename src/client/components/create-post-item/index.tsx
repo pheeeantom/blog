@@ -12,12 +12,15 @@ function CreatePostItem({post}: {post: Function}) {
     <div className={cn()}>
         <form onSubmit={async (e) => {
             e.preventDefault();
-            post();
+            const newPost = new FormData();
+            const file = (document.getElementById('pic') as HTMLInputElement).files[0];
+            newPost.append("file", file);
+            newPost.append("pic", file.name);
+            newPost.append("header", (document.getElementById('header') as HTMLInputElement).value);
+            newPost.append("text", (document.getElementById('text') as HTMLInputElement).value);
+            post(newPost);
         }}>
-
-            <div className={cn('field', {center: true})}>
-                <h1>ЗАПОСТИТЬ</h1>
-            </div>
+            <h1>ЗАПОСТИТЬ</h1>
             <div className={cn('field')}>
                 <label htmlFor="header">Заголовок:</label>
                 <input id="header" type="text" name="header" />
@@ -30,9 +33,7 @@ function CreatePostItem({post}: {post: Function}) {
                 <label htmlFor="pic">Картинка:</label>
                 <input id="pic" type="file" />
             </div>
-            <div className={cn('field', {center: true})}>
-                <input type="submit" value="Отправить"/>
-            </div>
+            <input type="submit" value="Отправить"/>
         </form>
     </div>
   );
