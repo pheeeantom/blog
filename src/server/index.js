@@ -68,6 +68,7 @@ app.get('/api/items', (req, res) => {
     console.log(req.user);
     let data = JSON.parse(fs.readFileSync('src/data/posts.json',
         { encoding: 'utf8', flag: 'r' }));
+    if (req.query.login) data = data.filter(post => post.author === req.query.login);
     let amount = data.length;
     if (req.query.sort === 'date') {
         data = data.sort((a, b) => b.id - a.id);

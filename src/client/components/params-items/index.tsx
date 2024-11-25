@@ -18,7 +18,7 @@ function ParamsItems({sort, setParam}: {sort: string, setParam: Function}) {
     <div className={cn()}>
         <select ref={selectRef} onChange={(e) => {
             setParam({sort: (e.target as HTMLSelectElement).options[(e.target as HTMLSelectElement).selectedIndex].
-                value});
+                value, start: '0'});
         }}>
             <option value={'date'}>Сортировать по дате</option>
             <option value={'likes'}>Сортировать по лайкам</option>

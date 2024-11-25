@@ -3,8 +3,8 @@ import {cn as bem} from '@bem-react/classname';
 import './style.css';
 import { Item } from "../../store/reducers/items";
 
-function PostItem({item, like, options}:
-    Readonly<{item: Item, like: Function, options: null}>) {
+function PostItem({item, like, setParam, options}:
+    Readonly<{item: Item, like: Function, setParam: Function, options: null}>) {
 
   console.log("PostItem");
 
@@ -21,7 +21,7 @@ function PostItem({item, like, options}:
             like(item.id);
           }}>{item.isLiked ? '⯆' : '⯅'}</button>{item.likes ?? '0'}</> : ''}</h3>
           <p>{item.text}</p>
-          <p className={cn('author', {muted: true})}>{item.author}</p>
+          <p className={cn('author', {muted: true})} onClick={() => setParam({login: item.author, start: '0'})}>{item.author}</p>
         </div>
       </div>
     </div>

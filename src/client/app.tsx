@@ -73,13 +73,15 @@ function App() {
                 <PageLayout>
                     <Nav fetchedUser={{data: user, error: errorUser, isLoading: isLoadingUser, isUninitialized}}
                         logout={callbacks.logout}/>
-                    <Posts fetchedUser={{data: user, error: errorUser, isLoading: isLoadingUser, isUninitialized}}/>
+                    <Posts create={true} byLogin={false} fetchedUser={{data: user, error: errorUser, isLoading: isLoadingUser, isUninitialized}}/>
                 </PageLayout>
             }/>
             <Route path={"/login"} element={
                 <PageLayout>
                     <Login fetchedUser={{data: user, error: errorUser, isLoading: isLoadingUser, isUninitialized}}
                         logout={callbacks.logout} />
+                    {!errorUser && user ? <Posts create={false} byLogin={true} fetchedUser={{data: user, error: errorUser, isLoading: isLoadingUser, isUninitialized}}/> :
+                        ''}
                 </PageLayout>
             }/>
             <Route path={"/registrate"} element={

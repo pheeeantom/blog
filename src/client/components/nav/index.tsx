@@ -16,7 +16,7 @@ function Nav({fetchedUser, logout}: Readonly<{fetchedUser: any, logout: Function
     <div className={cn()}>
         <TwoSided left={<Link to='/'>Главная</Link>} right={
             <Spinner active={fetchedUser.isLoading || fetchedUser.isUninitialized}>
-                {!fetchedUser.error && fetchedUser.data ? <>{fetchedUser.data.login}<button onClick={() => logout()}>Выйти</button></> : <>
+                {!fetchedUser.error && fetchedUser.data ? <><Link to='/login'>{fetchedUser.data.login}</Link><button onClick={() => logout()}>Выйти</button></> : <>
                     <Link to="/login">Войти</Link>
                     /
                     <Link to="/registrate">Зарегестрироваться</Link>
