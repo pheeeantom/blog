@@ -6,6 +6,7 @@ import { setChangedLocalStorage } from "../../store/reducers/users";
 import LoginForm from "../../components/login-form";
 import Spinner from "../../components/spinner";
 import Cabinet from "../../components/cabinet";
+import { setParams } from "../../store/reducers/items";
 
 function Login({fetchedUser, logout}: Readonly<{fetchedUser: any, logout: Function}>) {
 
@@ -53,6 +54,16 @@ function Login({fetchedUser, logout}: Readonly<{fetchedUser: any, logout: Functi
       }
     }, [loginReq, dispatch, setChangedLocalStorage, memoizedChangedLocalStorage]),
   };
+
+  /*useEffect(() => {
+    if (fetchedUser.data)
+      dispatch(setParams({
+        start: '0',
+        limit: '2',
+        sort: 'likes',
+        login: fetchedUser.data.login,
+      }));
+  }, [fetchedUser.data]);*/
 
   return (
     <Spinner active={fetchedUser.isLoading || fetchedUser.isUninitialized}>

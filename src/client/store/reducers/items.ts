@@ -20,6 +20,7 @@ export type ItemsParams = {
     limit: string,
     sort: string,
     login: string,
+    updated: string,
 };
 
 type Items = {
@@ -32,6 +33,7 @@ const initialState: Items = {
         limit: '2',
         sort: 'likes',
         login: '',
+        updated: '1',
     },
 }
 

@@ -37,7 +37,7 @@ var uploadPic = multer({ storage: storagePic}).single('pic');*/
 
 app.use((req, res, next) => {
     const users = JSON.parse(fs.readFileSync('src/data/users.json',
-        { encoding: 'utf8', flag: 'r' }));
+        { encoding: 'utf8', flag: 'r' })).data;
     if (req.headers.authorization) {
         jwt.verify(
             req.headers.authorization.split(' ')[1],
@@ -69,7 +69,7 @@ app.get('/api/items', (req, res) => {
     if (req.query.limit > 100) return res.status(400).json({message: 'Слишком большая выборка'});
     console.log(req.user);
     let data = JSON.parse(fs.readFileSync('src/data/posts.json',
-        { encoding: 'utf8', flag: 'r' }));
+        { encoding: 'utf8', flag: 'r' })).data;
     if (req.query.login) data = data.filter(post => post.author === req.query.login);
     let amount = data.length;
     if (req.query.sort === 'date') {
@@ -86,7 +86,7 @@ app.get('/api/items', (req, res) => {
 
 app.post('/api/auth', (req, res) => {
     const users = JSON.parse(fs.readFileSync('src/data/users.json',
-        { encoding: 'utf8', flag: 'r' }));
+        { encoding: 'utf8', flag: 'r' })).data;
     console.log(req.body.login);
     for (let user of users) {
         if (
@@ -107,8 +107,9 @@ app.post('/api/auth', (req, res) => {
 });
 
 app.post('/api/registrate', (req, res) => {
-    const users = JSON.parse(fs.readFileSync('src/data/users.json',
+    const json = JSON.parse(fs.readFileSync('src/data/users.json',
         { encoding: 'utf8', flag: 'r' }));
+    const users = json.data;
     console.log(req.body.login);
     for (let user of users) {
         if (
@@ -117,17 +118,20 @@ app.post('/api/registrate', (req, res) => {
             return res.status(500).json({ message: 'Логин уже существует' });
         }
     }
-    const newUser = { id: users[users.length - 1].id + 1, login: req.body.login, password: Math.random().toString(36).slice(-8) };
-    users.push(newUser);
-    fs.writeFileSync('src/data/users.json', JSON.stringify(users), { encoding: 'utf8' })
+    const newUser = { id: json.nextId, login: req.body.login, password: Math.random().toString(36).slice(-8) };
+    json.nextId = json.nextId + 1;
+    json.data.push(newUser);
+    fs.writeFileSync('src/data/users.json', JSON.stringify(json), { encoding: 'utf8' })
     return res.status(200).json(newUser);
 });
 
 app.post('/api/items/create', async (req, res) => {
-    const users = JSON.parse(fs.readFileSync('src/data/users.json',
+    const json1 = JSON.parse(fs.readFileSync('src/data/users.json',
         { encoding: 'utf8', flag: 'r' }));
-    const posts = JSON.parse(fs.readFileSync('src/data/posts.json',
+    const users = json1.data;
+    const json2 = JSON.parse(fs.readFileSync('src/data/posts.json',
         { encoding: 'utf8', flag: 'r' }));
+    const posts = json2.data;
     //console.log(req.body.login);
     console.log('width:' + req.files.file.width);
     if (req.body.header.length > 50) return res.status(400).json({ message: 'Слишком большой заголовок'});
@@ -141,14 +145,15 @@ app.post('/api/items/create', async (req, res) => {
     ) {
         console.log('hi1');
         const newPost = {
-            id: posts[posts.length - 1].id + 1,
-            pic: req.body.pic,
+            id: json2.nextId,
+            pic: "id" + json2.nextId.toString() + req.body.pic,
             author: req.user.login,
             header: req.body.header,
             text: req.body.text,
         };
-        posts.push(newPost);
-        fs.writeFileSync('src/data/posts.json', JSON.stringify(posts), { encoding: 'utf8' })
+        json2.nextId = json2.nextId + 1;
+        json2.data.push(newPost);
+        fs.writeFileSync('src/data/posts.json', JSON.stringify(json2), { encoding: 'utf8' })
         const folderName = path.join(__dirname, `../../public/${req.user.login}`);
         try {
             if (!fs.existsSync(folderName)) {
@@ -165,7 +170,7 @@ app.post('/api/items/create', async (req, res) => {
         } catch (err) {
             console.error(err);
         }
-        req.files.file.mv(path.join(__dirname, `../../public/${req.user.login}/pics/${req.body.pic}`), function(err) {
+        req.files.file.mv(path.join(__dirname, `../../public/${req.user.login}/pics/${newPost.pic}`), function(err) {
             if (err)
                 return res.status(500).send(err);
         
@@ -193,10 +198,12 @@ app.post('/api/items/create', async (req, res) => {
 });
 
 app.post('/api/items/like', (req, res) => {
-    const users = JSON.parse(fs.readFileSync('src/data/users.json',
+    const json1 = JSON.parse(fs.readFileSync('src/data/users.json',
         { encoding: 'utf8', flag: 'r' }));
-    const posts = JSON.parse(fs.readFileSync('src/data/posts.json',
+    const users = json1.data;
+    const json2 = JSON.parse(fs.readFileSync('src/data/posts.json',
         { encoding: 'utf8', flag: 'r' }));
+    const posts = json2.data;
     if (
         req.user
     ) {
@@ -233,9 +240,33 @@ app.post('/api/items/like', (req, res) => {
                 }
             });
         }
-        fs.writeFileSync('src/data/posts.json', JSON.stringify(newPosts), { encoding: 'utf8' });
-        fs.writeFileSync('src/data/users.json', JSON.stringify(newUsers), { encoding: 'utf8' });
+        json1.data = newUsers;
+        json2.data = newPosts;
+        fs.writeFileSync('src/data/posts.json', JSON.stringify(json2), { encoding: 'utf8' });
+        fs.writeFileSync('src/data/users.json', JSON.stringify(json1), { encoding: 'utf8' });
         return res.status(200);
+    }
+
+    return res.status(401).json({message: 'Not authorized'});
+});
+
+app.post('/api/items/delete', (req, res) => {
+    if (req.user) {
+        let json = JSON.parse(fs.readFileSync('src/data/posts.json',
+            { encoding: 'utf8', flag: 'r' }));
+        let data = json.data;
+        let findedPost = data.find(post => post.id === req.body.id);
+        if (!findedPost) {
+            return res.status(401).json({message: 'No such post'});
+        }
+        if (findedPost.author !== req.user.login) {
+            return res.status(401).json({message: 'Not your post'});
+        }
+        json.data = data.filter(post => {
+            return post.id !== req.body.id;
+        });
+        fs.writeFileSync('src/data/posts.json', JSON.stringify(json), { encoding: 'utf8' });
+        return res.status(200).json({ findedPost });
     }
 
     return res.status(401).json({message: 'Not authorized'});

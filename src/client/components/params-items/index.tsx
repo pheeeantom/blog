@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import {cn as bem} from '@bem-react/classname';
 import './style.css';
 
-function ParamsItems({sort, setParam}: {sort: string, setParam: Function}) {
+function ParamsItems({sort, setParam, reset}: {sort: string, setParam: Function, reset: Function}) {
 
   console.log("ParamsItems");
 
@@ -23,12 +23,9 @@ function ParamsItems({sort, setParam}: {sort: string, setParam: Function}) {
             <option value={'date'}>Сортировать по дате</option>
             <option value={'likes'}>Сортировать по лайкам</option>
         </select>
-        <button onClick={(e) => setParam({
-          start: '0',
-          limit: '2',
-          sort: 'likes',
-          login: '',
-        })}>Сбросить фильтры</button>
+        <button onClick={(e) => {
+          reset();
+        }}>Сбросить фильтры</button>
     </div>
   );
 }

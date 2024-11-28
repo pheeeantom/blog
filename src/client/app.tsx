@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import PageLayout from './components/page-layout';
 import { useFetchItemsQuery } from './store/services/items';
 import { useDispatch, useSelector } from 'react-redux';
 import List from './components/list';
 import PostItem from './components/post-item';
-import { Item } from './store/reducers/items';
+import { Item, setParams } from './store/reducers/items';
 import Spinner from './components/spinner';
 import LoginForm from './components/login-form';
 import RegistrationForm from './components/registration-form';
@@ -50,6 +50,17 @@ function App() {
     useEffect(() => {
         dispatch(setChangedLocalStorage(changedLocalStorage + 1));
     }, []);
+
+    /*const location = useLocation();
+
+    useEffect(() => {
+        dispatch(setParams({
+            start: '0',
+            limit: '2',
+            sort: 'likes',
+            login: '',
+        }));
+    }, [location]);*/
 
     /*useEffect(() => {
         if (!isUninitialized && !isLoadingUser) skip.current = true;

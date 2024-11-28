@@ -20,11 +20,11 @@ export const itemsAPI = createApi({
             return headers;
         }
     }),
-    tagTypes: ['Post'],
+    //tagTypes: ['Post'],
     endpoints: (build) => ({
         fetchItems: build.query<ItemsData, ItemsParams>({
             query: (params) => `?${new URLSearchParams(params)}`,
-            providesTags: result => ['Post'],
+            //providesTags: result => ['Post'],
         }),
         createItem: build.mutation<Item, FormData>({
             query: (body) => ({
@@ -32,7 +32,15 @@ export const itemsAPI = createApi({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['Post'],
+            //invalidatesTags: ['Post'],
+        }),
+        deleteItem: build.mutation<Item, number>({
+            query: (id) => ({
+                url: `/delete`,
+                method: 'POST',
+                body: {id},
+            }),
+            //invalidatesTags: ['Post'],
         }),
         like: build.mutation<void, {
             id: number,
@@ -42,9 +50,9 @@ export const itemsAPI = createApi({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['Post'],
+            //invalidatesTags: ['Post'],
         }),
     })
 });
 
-export const { useFetchItemsQuery, useCreateItemMutation, useLikeMutation } = itemsAPI;
+export const { useFetchItemsQuery, useCreateItemMutation, useDeleteItemMutation, useLikeMutation } = itemsAPI;
