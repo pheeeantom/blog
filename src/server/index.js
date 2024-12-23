@@ -173,7 +173,7 @@ app.post('/api/items/create', async (req, res) => {
         req.files.file.mv(path.join(__dirname, `../../public/${req.user.login}/pics/${newPost.pic}`), function(err) {
             if (err)
                 return res.status(500).send(err);
-        
+
             //res.send('File uploaded!');
         });
         /*var reader = new FileReader()
@@ -244,7 +244,7 @@ app.post('/api/items/like', (req, res) => {
         json2.data = newPosts;
         fs.writeFileSync('src/data/posts.json', JSON.stringify(json2), { encoding: 'utf8' });
         fs.writeFileSync('src/data/users.json', JSON.stringify(json1), { encoding: 'utf8' });
-        return res.status(200);
+        return res.status(200).json({});
     }
 
     return res.status(401).json({message: 'Not authorized'});

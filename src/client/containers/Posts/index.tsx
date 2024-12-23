@@ -25,7 +25,7 @@ function Posts({fetchedUser, create, byLogin}: Readonly<{fetchedUser: any, creat
 
     const skip = useRef(true);
 
-    const {data: items, error: errorItems, isLoading: isLoadingItems} = useFetchItemsQuery({...memoizedParams/*, changedUserTag: fetchedUser.data, changedUserErrorTag: fetchedUser.error*/}, {
+    const {data: items, error: errorItems, isLoading: isLoadingItems} = useFetchItemsQuery(memoizedParams/*, changedUserTag: fetchedUser.data, changedUserErrorTag: fetchedUser.error*/, {
         skip: skip.current
     });
     console.log(items, errorItems, isLoadingItems);
@@ -44,7 +44,7 @@ function Posts({fetchedUser, create, byLogin}: Readonly<{fetchedUser: any, creat
             limit: '2',
             sort: 'likes',
             login: byLogin && !fetchedUser.error ? fetchedUser.data.login : '',
-            updated: memoizedParams.updated,
+            updated: (+memoizedParams.updated + 1).toString(),
         }));
         skip.current = false;
         //setTimeout(() => { skip.current = true; }, 1000);
@@ -74,9 +74,15 @@ function Posts({fetchedUser, create, byLogin}: Readonly<{fetchedUser: any, creat
                 alert(e.data.message);
             }
         }, [dispatch, setParams, deleteReq, byLogin, memoizedParams]),
-        like: useCallback((id: number) => {
-            likeReq({id});
-        }, []),
+        like: useCallback(async (id: number) => {
+            try {
+                let temp = await likeReq({id}).unwrap();
+                dispatch(setParams({...memoizedParams, updated: (+memoizedParams.updated + 1).toString()}));
+                console.log(temp);
+            } catch (e) {
+                alert(e.data.message);
+            }
+        }, [dispatch, setParams, likeReq, memoizedParams]),
         setParam: useCallback((param: any) => {
             console.log(1111);
             dispatch(setParams({...memoizedParams, ...param}));
@@ -87,7 +93,7 @@ function Posts({fetchedUser, create, byLogin}: Readonly<{fetchedUser: any, creat
                 limit: '2',
                 sort: 'likes',
                 login: !byLogin ? '' : memoizedParams.login,
-                updated: memoizedParams.updated,
+                updated: (+memoizedParams.updated + 1).toString(),
             };
             dispatch(setParams(newParam));
         }, [dispatch, setParams, memoizedParams, byLogin])
